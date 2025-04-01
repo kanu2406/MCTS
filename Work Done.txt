@@ -1,0 +1,49 @@
+Main Classes : Card, Deck, Game,Player, GameState (all in .py files)
+Total Cards = 30 (10 for each player)
+Rewards are number of tricks won
+
+VERSION -1
+
+
+First Tried Flat Monte Carlo (i.e. choosing move based on random simulations and no tree). 
+Implementation in "Flat_Monte_Carlo.ipynb". Two settings considered here-
+1. 2 players playing randomly and one using flat monte carlo (working well)
+2. 2 players playing highest rank card and one using using flat monte carlo (decent performance)
+
+Note: Only used 100 games for comparison for now. Planning to do more games in both settings.
+
+
+
+Next, UCT Approach. New Class: MCTSNode()
+Only one setting considered 2 players playing randomly and one using UCT. Not very good but better than random.
+Depends a lot on initial distribution of cards. Only tried 100 games. Planning to experiment with more.
+
+
+
+Further Work:
+
+1. Increase number of games in each case.
+2. Experiment with more settings in UCT (rule based vs UCT)
+3. Implement Imperfect Information Setting
+4. Also Experiment with basic MCTS i.e. choosing child randomly.
+
+
+VERSION -2
+
+1. Changed UCT. Changed the backpropagation approach. Reward will be based on player.
+2. Results from new implementation : 71.10% against random and 73.10% against rule based (don't know why it increased). Ran both methods of evaluation for 1000 games. Also changed evaluation strategy. Now starting player will randomized for each game and player who is going to take UCT based turn is also going to be random for each game (meaning although the player playing UCT move be fixed for a game but it will be different for each game so we don't have any bias ). Since win rate is above 33% UCT is performing better.
+3. Implemented Imperfect Information approach as well. I tried two approaches-
+
+          i) First I implement the approach where we first generate all possible states and then sample from it and run multiple MCTS search. This led to 
+             crashing of RAM. Tried to improve it through multiple ways but it still was not working even for a single game.
+         ii ) Then instead of generating all possible states, I randomly distrbuted unknown cards (i.e. Deck - cards in current player's hand - cards on                     table). There might be some repeatitions here in sampled states. Then I ran multiple MCTS runs to find the best move. I am not sure if it is 
+               a good approach but I couldn't think of anything else to solve this.Right now I am picking the action which is the best in most of the                            sampled worlds. This is in the notebook **Imperfect Information - 1**
+
+4. To do the second approach, added a function called redistribute() to GameState class.
+
+5. With the second implementation, I only ran 100 games and sampled 10 games each time. Win rate against random = 73% and against rule based it is 75%
+
+6. Now using same approach of sampling worlds, I picked the action with highest reward for all sampled worlds. To reward the worlds, I applied all possible move from that sampled state for the current player and simulated game to check if that player won or not. So the reward would be +1 if he won else 0. I did this for all possible legal moves of all sampled game_state. This was a very fast and win rate with random for this case is 66% and with rule based is 70%.  This is in the notebook **Imperfect Information - 2**
+
+
+
